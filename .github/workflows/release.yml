@@ -14,6 +14,6 @@ jobs:
         uses: pnpm/action-setup@v2
         with:
           version: 7
-      - uses: ppodds/relno-action
+      - uses: ppodds/relno-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}

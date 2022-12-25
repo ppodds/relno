@@ -1,0 +1,60 @@
+{
+  "name": "relno-cli",
+  "version": "1.0.0",
+  "description": "CLI for relno",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": "bin/cli.js",
+  "files": [
+    "dist",
+    "bin"
+  ],
+  "author": "ppodds",
+  "license": "MIT",
+  "module": "CommonJS",
+  "scripts": {
+    "clean": "rimraf dist/*",
+    "build": "pnpm clean && tsc",
+    "format": "prettier --write {src,__tests__}/**/*.ts",
+    "format-check": "prettier --check {src,__tests__}/**/*.ts",
+    "lint": "eslint --fix src/**/*.ts",
+    "lint-staged": "lint-staged",
+    "test": "jest"
+  },
+  "repository": "ppodds/relno",
+  "keywords": [
+    "node",
+    "release",
+    "release note"
+  ],
+  "packageManager": "pnpm@7.18.1",
+  "dependencies": {
+    "commander": "^9.4.1",
+    "relno": "^1.0.0"
+  },
+  "devDependencies": {
+    "@jest/globals": "^29.3.1",
+    "@types/node": "^18.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.30.5",
+    "eslint": "^8.19.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-jest": "^27.0.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "jest": "^29.0.0",
+    "lint-staged": "^13.1.0",
+    "prettier": "2.8.1",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^29.0.0",
+    "typescript": "^4.7.4"
+  },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "__tests__/**/*.ts": [
+      "prettier --write"
+    ]
+  }
+}

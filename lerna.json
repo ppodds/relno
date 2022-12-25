@@ -1,6 +1,5 @@
 {
   "npmClient": "pnpm",
   "useWorkspaces": true,
-  "packages": ["packages/*", "docs"],
   "version": "0.0.0-alpha.0"
 }

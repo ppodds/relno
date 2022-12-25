@@ -1,0 +1,19 @@
+name: Release
+on:
+  release:
+    types: [published, edited]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 7
+      - uses: ppodds/relno-action
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}

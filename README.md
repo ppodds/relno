@@ -29,7 +29,7 @@ Relno ia a fully configurable release note generation framework. Allow you to au
   <td valign="top">
     <h3>Documentation</h3>
     <p>
-      We highly recommend you take a look at <a href="https://github.com/ppodds/relno/blob/master/docs/index.md">the Relno documentation</a> to learn how does it work.
+      We highly recommend you take a look at <a href="https://relno.ppodds.cc/">the Relno documentation</a> to learn how does it work.
     </p>
   </td>
 </tr>

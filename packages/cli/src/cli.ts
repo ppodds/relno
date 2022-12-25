@@ -5,7 +5,7 @@ import { parseMetadata } from "./utils/option-parse";
 export function buildProgram() {
   const program = new Command();
   program
-    .option("-c, --config <path>", "config file path", "relno.config.ts")
+    .option("-c, --config <path>", "config file path", "relno.config.js")
     .requiredOption("-f, --from <version>", "from git version")
     .requiredOption("-t, --to <version>", "to git version")
     .option(

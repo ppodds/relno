@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📚 Documentation
+    url: https://github.com/ppodds/relno/blob/master/docs/index.md
+    about: Check documentation for usage
+  - name: 💬 Discussions
+    url: https://github.com/ppodds/relno/discussions
+    about: Use discussions if you have an idea for improvement and asking questions

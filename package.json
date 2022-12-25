@@ -1,0 +1,15 @@
+{
+  "private": true,
+  "scripts": {
+    "prepare": "husky install",
+    "build": "lerna run build",
+    "lint": "lerna run lint",
+    "format": "lerna run format",
+    "test": "lerna run test"
+  },
+  "packageManager": "pnpm@7.18.1",
+  "devDependencies": {
+    "husky": "^8.0.2",
+    "lerna": "^6.1.0"
+  }
+}

@@ -48,7 +48,7 @@ Relno ia a fully configurable release note generation framework. Allow you to au
   <td valign="top">
     <h3>Reporting bugs</h3>
     <p>
-      Check out the <a href="https://github.com/ppodds/relno/issues/new?assignees=&labels=&template=bug-report.md&title=">Reporting Bugs</a> page.</p>
+      Check out the <a href="https://github.com/ppodds/relno/issues/new?assignees=&labels=&template=bug-report.yml">Reporting Bugs</a> page.</p>
     </p>
   </td>
 </tr>
@@ -56,7 +56,7 @@ Relno ia a fully configurable release note generation framework. Allow you to au
   <td valign="top">
     <h3>Suggestions</h3>
     <p>
-      Check out the <a href="https://github.com/ppodds/release-note-action/issues/new?assignees=&labels=&template=feature_request.md&title=">Feature request</a> page.
+      Check out the <a href="https://github.com/ppodds/relno/issues/new?assignees=&labels=&template=feature_request.yml">Feature request</a> page.
     </p>
   </td>
 </tr>
@@ -64,7 +64,7 @@ Relno ia a fully configurable release note generation framework. Allow you to au
   <td valign="top">
     <h3>Questions</h3>
     <p>
-      Check out the <a href="https://github.com/ppodds/release-note-action/issues">Issues</a> page.
+      Check out the <a href="https://github.com/ppodds/relno/issues">Issues</a> page.
     </p>
   </td>
 </tr>

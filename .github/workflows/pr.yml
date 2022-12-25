@@ -1,0 +1,7 @@
+name: Pull Request Checks
+
+on:
+  pull_request:
+jobs:
+  unit-test:
+    uses: ./.github/workflows/unit-test.yml

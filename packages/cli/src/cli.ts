@@ -31,6 +31,6 @@ export async function run() {
     prTypes: config.prTypes ?? [],
     metadata: options.metadata as ReleaseMetadata,
   });
-  const result = generator.generate();
+  const result = await generator.generate();
   console.log(result);
 }

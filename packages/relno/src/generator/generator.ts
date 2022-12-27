@@ -1,6 +1,14 @@
 import { Commit } from "../git/log";
 import { ExpressionEvaluator, Variable } from "./expression-evaluator";
+import {
+  SectionNode,
+  TemplateNode,
+  TemplateNodeType,
+  TemplateParser,
+  TextNode,
+} from "./parser";
 import { PRType } from "./pr-type";
+import { Section } from "./section";
 
 export interface ReleaseMetadata {
   authorLogin: string;
@@ -30,17 +38,34 @@ export class Generator {
   private readonly _log: readonly Commit[];
   private readonly _options: GeneratorOptions;
   private readonly _data: { prType: PRType; commits: Commit[] }[];
+  private readonly _sections: Map<string, Section>;
+
   constructor(log: readonly Commit[], options: GeneratorOptions) {
     this._log = log;
     this._options = options;
     this._data = [];
+    this._sections = new Map();
+    this.addSection({
+      name: "default",
+      parse: parseDefaultSection,
+    });
+    for (const prType of options.prTypes) {
+      this.addSection({
+        name: prType.identifier,
+        parse: parsePRTypeSection,
+      });
+    }
+    this.addSection({
+      name: "commits",
+      parse: parseCommitsSection,
+    });
   }
 
   /**
    * Generate the release note from commits and options
    * @returns The release notes
    */
-  public generate(): string {
+  public async generate(): Promise<string> {
     // clear data if already generated
     if (this._data.length !== 0) this._data.splice(0, this._data.length);
     // gererate necessary information
@@ -59,70 +84,166 @@ export class Generator {
       );
       this._data.push({ prType, commits });
     }
-    return this.parseDefaultSection();
+    const templateAST = new TemplateParser({
+      template: this._options.template,
+    }).parse();
+    const parsedTemplateAST = await this.parseTemplateAST(templateAST);
+    return this.flattenAST(parsedTemplateAST);
   }
 
-  /**
-   * Parse the default template
-   * @returns Parsed default template
-   */
-  private parseDefaultSection(): string {
-    let result = this._options.template;
-    for (const entry of this._data) {
-      const section = this.getSection(
-        this._options.template,
-        entry.prType.identifier,
-      );
-      result = this.replaceSection(
-        result,
-        entry.prType.identifier,
-        this.parsePRTypeSection(section, entry),
-      );
+  private parseTemplateAST(
+    root: SectionNode,
+  ): SectionNode | Promise<SectionNode> {
+    return this.getSection("default").parse(this, root);
+  }
+
+  private flattenAST(root: SectionNode): string {
+    let result = "";
+    for (const child of root.children) {
+      if (child.type === TemplateNodeType.Text) {
+        result += (child as TextNode).value;
+      } else if (child.type === TemplateNodeType.Section) {
+        result += this.flattenAST(child as SectionNode);
+      }
     }
-    result = this.parseTemplate(result, {
-      ...this._options.metadata,
-    });
     return result;
   }
 
-  /**
-   * Parse the PRType template
-   * @param prTypeTemplate The PRType section template
-   * @param data The PRType data
-   * @returns Parsed PRType section
-   */
-  private parsePRTypeSection(
-    prTypeTemplate: string,
-    data: {
-      prType: PRType;
-      commits: Commit[];
-    },
-  ): string {
-    if (data.commits.length === 0) return "";
-    const section = this.getSection(prTypeTemplate, "commits");
-    const parsedSection = this.replaceSection(
-      prTypeTemplate,
-      "commits",
-      this.parseCommitsSection(section, data.commits),
-    );
-    return this.parseTemplate(parsedSection, {
-      title: data.prType.title,
-      identifier: data.prType.identifier,
-    });
+  public addSection(section: Section) {
+    this._sections.set(section.name, section);
   }
 
-  /**
-   * Parse the commit template
-   * @param commitsTemplate The commit section template
-   * @param commits Commits data
-   * @returns Parsed commits section
-   */
-  private parseCommitsSection(
-    commitsTemplate: string,
-    commits: Commit[],
-  ): string {
-    let result = "";
-    for (const commit of commits) {
+  public get data() {
+    return this._data;
+  }
+
+  public getSection(sectionName: string): Section {
+    const t = this._sections.get(sectionName);
+    if (!t) throw new Error(`Can't find section ${sectionName}`);
+    return t;
+  }
+
+  public get options() {
+    return this._options;
+  }
+}
+
+function parseTextNode(text: TextNode, variable: Variable): TextNode {
+  const regex = /{{([^\n}}]*)}}/;
+  let matchResult = text.value.match(regex);
+  const result: TextNode = {
+    type: TemplateNodeType.Text,
+    value: text.value,
+  };
+  while (matchResult) {
+    const evaluator = new ExpressionEvaluator(variable);
+    const parsedVariable = evaluator.evaluate(matchResult[1].trim());
+    // convert boolean to string
+    if (typeof parsedVariable === "boolean")
+      result.value = result.value.replace(
+        matchResult[0],
+        parsedVariable ? "true" : "false",
+      );
+    else result.value = result.value.replace(regex, parsedVariable);
+    matchResult = result.value.match(regex);
+  }
+  return result;
+}
+
+/**
+ * Parse the template node. If the node is a section node, it will call the section parser, otherwise it will call the text node parser.
+ * @param generator The generator instance
+ * @param node The section node to parse
+ * @param variable Variables in this scope
+ * @returns The parsed template node
+ */
+export async function parseNode(
+  generator: Generator,
+  node: TemplateNode,
+  variable: Variable,
+): Promise<TemplateNode> {
+  switch (node.type) {
+    case TemplateNodeType.Section: {
+      const sectionNode = node as SectionNode;
+      return await generator
+        .getSection(sectionNode.name)
+        .parse(generator, sectionNode);
+    }
+    case TemplateNodeType.Text:
+      return parseTextNode(node as TextNode, variable);
+  }
+}
+
+async function parseDefaultSection(
+  generator: Generator,
+  sectionNode: SectionNode,
+): Promise<SectionNode> {
+  const result: SectionNode = {
+    type: TemplateNodeType.Section,
+    name: sectionNode.name,
+    children: [],
+  };
+  for (const child of sectionNode.children) {
+    result.children.push(
+      await parseNode(generator, child, {
+        ...generator.options.metadata,
+      }),
+    );
+  }
+  return result;
+}
+
+async function parsePRTypeSection(
+  generator: Generator,
+  sectionNode: SectionNode,
+): Promise<SectionNode> {
+  const data = generator.data.find(
+    (e) => e.prType.identifier === sectionNode.name,
+  );
+  if (!data) throw new Error(`Can't find section ${sectionNode.name}`);
+  if (data.commits.length === 0)
+    return {
+      type: TemplateNodeType.Section,
+      name: sectionNode.name,
+      children: [],
+    };
+  const result: SectionNode = {
+    type: TemplateNodeType.Section,
+    name: sectionNode.name,
+    children: [],
+  };
+  for (const child of sectionNode.children) {
+    result.children.push(
+      await parseNode(generator, child, {
+        title: data.prType.title,
+        identifier: data.prType.identifier,
+      }),
+    );
+  }
+  return result;
+}
+
+async function parseCommitsSection(
+  generator: Generator,
+  sectionNode: SectionNode,
+): Promise<SectionNode> {
+  const data = generator.data.find(
+    (e) => e.prType.identifier === sectionNode.parent,
+  );
+  if (!data) throw new Error(`Can't find section ${sectionNode.parent}`);
+  if (data.commits.length === 0)
+    return {
+      type: TemplateNodeType.Section,
+      name: sectionNode.name,
+      children: [],
+    };
+  const result: SectionNode = {
+    type: TemplateNodeType.Section,
+    name: sectionNode.name,
+    children: [],
+  };
+  for (const commit of data.commits) {
+    for (const child of sectionNode.children) {
       const regex = /([^()\n!]+)(?:\((.*)\))?(!)?: (.+) \(#([1-9][0-9]*)\)/;
       const matchResult = commit.message.match(regex);
       if (!matchResult) continue;
@@ -131,78 +252,17 @@ export class Generator {
       const prBreaking = matchResult[3] === "!";
       const message = matchResult[4];
       const prNumber = matchResult[5];
-      result += this.parseTemplate(commitsTemplate, {
-        ...commit,
-        prType,
-        prSubtype,
-        prBreaking,
-        message,
-        prNumber,
-      });
+      result.children.push(
+        await parseNode(generator, child, {
+          ...commit,
+          prType,
+          prSubtype,
+          prBreaking,
+          message,
+          prNumber,
+        }),
+      );
     }
-    return result;
   }
-
-  /**
-   * Get the section content from specified section name
-   * @param template The template to parse
-   * @param sectionName The section name
-   * @returns The section content
-   */
-  private getSection(template: string, sectionName: string) {
-    const result = template.match(this.buildSectionRegex(sectionName));
-    if (!result) return "";
-    return result[1];
-  }
-
-  /**
-   * Replace the section in the template
-   * @param template The template to process
-   * @param sectionName The name of the section to be replaced
-   * @param parsedSection The parsed section which will replace the original section
-   * @returns The processed template
-   */
-  private replaceSection(
-    template: string,
-    sectionName: string,
-    parsedSection: string,
-  ) {
-    return template.replace(this.buildSectionRegex(sectionName), parsedSection);
-  }
-
-  /**
-   * Parse the template with variables
-   * @param template The template to parse
-   * @param variable Variables in this scope
-   * @returns The parsed template
-   */
-  private parseTemplate(template: string, variable: Variable): string {
-    const regex = /{{([^\n}}]*)}}/;
-    let matchResult = template.match(regex);
-    let result = template;
-    while (matchResult) {
-      const evaluator = new ExpressionEvaluator(variable);
-      const parsedVariable = evaluator.evaluate(matchResult[1].trim());
-      // convert boolean to string
-      if (typeof parsedVariable === "boolean")
-        result = result.replace(
-          matchResult[0],
-          parsedVariable ? "true" : "false",
-        );
-      else result = result.replace(regex, parsedVariable);
-      matchResult = result.match(regex);
-    }
-    return result;
-  }
-
-  /**
-   * Build the section regex
-   * @param sectionName The name of the section
-   * @returns section regex
-   */
-  private buildSectionRegex(sectionName: string) {
-    return new RegExp(
-      `<!--[ \t]*BEGIN[ \t]*${sectionName}[ \t]*SECTION[ \t]*-->[ \t]*\n((.|\r|\n)*)<!--[ \t]*END[ \t]*${sectionName}[ \t]*SECTION[ \t]*-->[ \t]*\n?`,
-    );
-  }
+  return result;
 }

@@ -98,13 +98,13 @@ const prTypes = [
   { identifier: "test", title: "✅ Tests" },
 ];
 describe("Generator test", () => {
-  test("Generate a release note", () => {
+  test("Generate a release note", async () => {
     const generator = new Generator(commits, {
       prTypes,
       template,
       metadata,
     });
-    expect(generator.generate()).toBe(`## 📝 Changelog
+    expect(await generator.generate()).toBe(`## 📝 Changelog
 
 [compare changes](https://test.com/compare/1...2)
 
@@ -138,9 +138,10 @@ describe("Generator test", () => {
 - frontend: Direct call api endpoint instead of calling wrapper (#207)
 - frontend: Paginator state management (#205)
 
-<!-- Generate by Release Note -->`);
+<!-- Generate by Release Note -->
+`);
   });
-  test("Generate with metadata", () => {
+  test("Generate with metadata", async () => {
     const generator = new Generator([], {
       prTypes: [],
       template:
@@ -150,15 +151,15 @@ describe("Generator test", () => {
         "{{zipballUrl}}\n{{compareUrl}}",
       metadata,
     });
-    expect(generator.generate()).toBe(
+    expect(await generator.generate()).toBe(
       "test\ntest\ntest@test.com\ntest created time\n" +
         "https://test.com/discussion/1\nhttps://test.com/release/1\n1\ntest release\n" +
         "test published time\nv0.0.1\nv0.0.0\nhttps://test.com/tarball/1\n" +
         "https://test.com/commit/test\nhttps://test.com/zipball/1\n" +
-        "https://test.com/compare/1...2",
+        "https://test.com/compare/1...2\n",
     );
   });
-  test("Generate with commit contains subtype", () => {
+  test("Generate with commit contains subtype", async () => {
     const generator = new Generator(
       [
         {
@@ -181,7 +182,7 @@ describe("Generator test", () => {
         metadata,
       },
     );
-    expect(generator.generate()).toBe(`## 📝 Changelog
+    expect(await generator.generate()).toBe(`## 📝 Changelog
 
 [compare changes](https://test.com/compare/1...2)
 
@@ -189,9 +190,10 @@ describe("Generator test", () => {
 
 - docs: Update README.md (#1)
 
-<!-- Generate by Release Note -->`);
+<!-- Generate by Release Note -->
+`);
   });
-  test("Generate with commit contains breaking change", () => {
+  test("Generate with commit contains breaking change", async () => {
     const generator = new Generator(
       [
         {
@@ -214,7 +216,7 @@ describe("Generator test", () => {
         metadata,
       },
     );
-    expect(generator.generate()).toBe(`## 📝 Changelog
+    expect(await generator.generate()).toBe(`## 📝 Changelog
 
 [compare changes](https://test.com/compare/1...2)
 
@@ -226,9 +228,10 @@ describe("Generator test", () => {
 
 - ⚠️ Edit existed feature (#1)
 
-<!-- Generate by Release Note -->`);
+<!-- Generate by Release Note -->
+`);
   });
-  test("Generate boolean type variable", () => {
+  test("Generate boolean type variable", async () => {
     const generator = new Generator(
       [
         {
@@ -264,13 +267,14 @@ describe("Generator test", () => {
 <!-- BEGIN commits SECTION -->
 {{ prBreaking }}
 <!-- END commits SECTION -->
-<!-- END feat SECTION -->`,
+<!-- END feat SECTION -->
+`,
         metadata,
       },
     );
-    expect(generator.generate()).toBe("true\nfalse\n");
+    expect(await generator.generate()).toBe("true\nfalse\n");
   });
-  test("Generate twice", () => {
+  test("Generate twice", async () => {
     const generator = new Generator(
       [
         {
@@ -305,8 +309,9 @@ describe("Generator test", () => {
 
 - ⚠️ Edit existed feature (#1)
 
-<!-- Generate by Release Note -->`;
-    expect(generator.generate()).toBe(result);
-    expect(generator.generate()).toBe(result);
+<!-- Generate by Release Note -->
+`;
+    expect(await generator.generate()).toBe(result);
+    expect(await generator.generate()).toBe(result);
   });
 });

@@ -3,3 +3,4 @@ lib/
 node_modules/
 template.md
 src/generator/parser/expression-parser.ts
+src/generator/parser/section-parser.ts

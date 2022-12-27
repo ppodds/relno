@@ -3,3 +3,4 @@ lib/
 node_modules/
 jest.config.js
 src/generator/parser/expression-parser.ts
+src/generator/parser/section-parser.ts

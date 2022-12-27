@@ -1,9 +1,11 @@
+import { parse } from "./section-parser";
 import {
   SectionNode,
   TemplateNode,
   TemplateNodeType,
   TextNode,
 } from "./template-ast";
+import { SectionBeginNode } from "./section-ast";
 
 export interface TemplateParserOptions {
   template: string;
@@ -84,12 +86,12 @@ export class TemplateParser {
         ),
       );
       if (startSection !== null) {
-        const childSectionName = startSection[1].trim();
+        const childSection: SectionBeginNode = parse(startSection[0]);
         result.push({
           type: TemplateNodeType.Section,
-          name: childSectionName,
+          name: childSection.sections.join(" "),
           parent: sectionName,
-          children: this.parseSection(childSectionName),
+          children: this.parseSection(childSection.sections.join(" ")),
         } as SectionNode);
         continue;
       }

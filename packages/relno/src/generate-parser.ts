@@ -33,6 +33,21 @@ const parserFiles: {
     },
     outputPath: "src/generator/parser/expression-parser.ts",
   },
+  {
+    sourcePath: "src/generator/parser/section-parser.pegjs",
+    options: {
+      tspegjs: {
+        customHeader: `import { SectionNode, SectionNodeType, SectionBeginNode, SectionEndNode } from "./section-ast";`,
+      },
+      returnTypes: {
+        identifier: "string",
+        sectionBegin: "SectionBeginNode",
+        sectionEnd: "SectionEndNode",
+        section: "SectionNode",
+      },
+    },
+    outputPath: "src/generator/parser/section-parser.ts",
+  },
 ];
 
 for (const parserFile of parserFiles) {

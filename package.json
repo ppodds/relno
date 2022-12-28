@@ -5,7 +5,8 @@
     "build": "lerna run build",
     "lint": "lerna run lint",
     "format": "lerna run format",
-    "test": "lerna run test"
+    "test": "lerna run test",
+    "prepublishOnly": "pnpm run lint && pnpm run test && pnpm run build"
   },
   "packageManager": "pnpm@7.20.0",
   "devDependencies": {

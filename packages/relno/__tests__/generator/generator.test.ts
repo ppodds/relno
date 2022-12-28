@@ -314,4 +314,67 @@ describe("Generator test", () => {
     expect(await generator.generate()).toBe(result);
     expect(await generator.generate()).toBe(result);
   });
+  test("reuse template", async () => {
+    const generator = new Generator(commits, {
+      prTypes,
+      template: `## 📝 Changelog
+
+[compare changes]({{ compareUrl }})
+
+<!-- BEGIN breaking SECTION -->
+### {{ title }}
+
+<!-- BEGIN commits SECTION -->
+- {{ prSubtype }}{{ generateIfNotEmpty(prSubtype, ": ") }}{{ toSentence(message) }} (#{{ prNumber }})
+<!-- END commits SECTION -->
+
+<!-- END breaking SECTION -->
+<!-- BEGIN feat, fix, docs, chore, refactor, test SECTION -->
+### {{ title }}
+
+<!-- BEGIN commits SECTION -->
+- {{ prSubtype }}{{ generateIfNotEmpty(prSubtype, ": ") }}{{ generateIf(prBreaking, "⚠️ ") }}{{ toSentence(message) }} (#{{ prNumber }})
+<!-- END commits SECTION -->
+
+<!-- END feat, fix, docs, chore, refactor, test SECTION -->
+<!-- Generate by Release Note -->`,
+      metadata,
+    });
+    expect(await generator.generate()).toBe(`## 📝 Changelog
+
+[compare changes](https://test.com/compare/1...2)
+
+### ⚠️ Breaking Changes
+
+- Breaking change feature (#987)
+
+### 🚀 Enhancements
+
+- frontend: List UI improvement (#212)
+- Search engine friendly CoursesSearch (#199)
+- ⚠️ Breaking change feature (#987)
+
+### 🩹 Fixes
+
+- frontend: Invalid route in ReviewFrame (#210)
+- frontend: Page number isn't reset when changing filter (#203)
+- Feedback page params validation (#201)
+- Page value is inconsistent (#197)
+- Course feedback test failed sometime (#195)
+- Show wrong page when user view feedback and back (#192)
+- Wrong dev proxy setting (#191)
+
+### 🏡 Chore
+
+- Remove unnecessary files (#193)
+- deps: Update pnpm to v7.17.0 (#190)
+
+### 💅 Refactors
+
+- frontend: Direct call api endpoint instead of calling wrapper (#207)
+- frontend: Paginator state management (#205)
+
+<!-- Generate by Release Note -->
+`);
+  });
 });

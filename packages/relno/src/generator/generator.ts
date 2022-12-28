@@ -181,6 +181,7 @@ async function parseDefaultSection(
   const result: SectionNode = {
     type: TemplateNodeType.Section,
     name: sectionNode.name,
+    tags: sectionNode.tags,
     children: [],
   };
   for (const child of sectionNode.children) {
@@ -201,17 +202,13 @@ async function parsePRTypeSection(
     (e) => e.prType.identifier === sectionNode.name,
   );
   if (!data) throw new Error(`Can't find section ${sectionNode.name}`);
-  if (data.commits.length === 0)
-    return {
-      type: TemplateNodeType.Section,
-      name: sectionNode.name,
-      children: [],
-    };
   const result: SectionNode = {
     type: TemplateNodeType.Section,
     name: sectionNode.name,
+    tags: sectionNode.tags,
     children: [],
   };
+  if (data.commits.length === 0) return result;
   for (const child of sectionNode.children) {
     result.children.push(
       await parseNode(generator, child, {
@@ -231,17 +228,13 @@ async function parseCommitsSection(
     (e) => e.prType.identifier === sectionNode.parent,
   );
   if (!data) throw new Error(`Can't find section ${sectionNode.parent}`);
-  if (data.commits.length === 0)
-    return {
-      type: TemplateNodeType.Section,
-      name: sectionNode.name,
-      children: [],
-    };
   const result: SectionNode = {
     type: TemplateNodeType.Section,
     name: sectionNode.name,
+    tags: sectionNode.tags,
     children: [],
   };
+  if (data.commits.length === 0) return result;
   for (const commit of data.commits) {
     for (const child of sectionNode.children) {
       const regex = /([^()\n!]+)(?:\((.*)\))?(!)?: (.+) \(#([1-9][0-9]*)\)/;

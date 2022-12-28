@@ -15,6 +15,7 @@ export interface TextNode extends TemplateNode {
 export interface SectionNode extends TemplateNode {
   type: TemplateNodeType.Section;
   name: string;
+  tags: string[];
   parent?: string;
   children: TemplateNode[];
 }

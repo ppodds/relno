@@ -5,7 +5,7 @@ import {
   TemplateNodeType,
   TextNode,
 } from "./template-ast";
-import { SectionBeginNode } from "./section-ast";
+import { SectionBeginNode, SectionEndNode } from "./section-ast";
 
 export interface TemplateParserOptions {
   template: string;
@@ -38,12 +38,14 @@ export class TemplateParser {
       return {
         type: TemplateNodeType.Section,
         name: "default",
+        tags: ["default"],
         children: [],
       };
     return {
       type: TemplateNodeType.Section,
       name: "default",
-      children: this.parseSection("default"),
+      tags: ["default"],
+      children: this.parseSection("default", ["default"]),
     };
   }
 
@@ -67,38 +69,64 @@ export class TemplateParser {
    * Parse the default template
    * @returns AST of the default section
    */
-  private parseSection(sectionName: string): TemplateNode[] {
+  private parseSection(sectionName: string, tags: string[]): TemplateNode[] {
     const result: TemplateNode[] = [];
+    // read until the end of the section or the end of the template
     while (true) {
       const line = this.nextLine();
       if (line === null) throw new Error("Unexpected end of template");
       if (
         line.match(
           new RegExp(
-            `<!--[ \t]*END[ \t]*${sectionName}[ \t]*SECTION[ \t]*-->[ \t]*\n`,
+            `<!--[ \t]*END[ \t]*[A-Za-z0-9 ,\t_-]+[ \t]*SECTION[ \t]*-->[ \t]*\n`,
           ),
         )
-      )
-        break;
+      ) {
+        // parse and check tag
+        const endSection: SectionEndNode = parse(line);
+        // check tag deeply
+        if (
+          endSection.sections.length === tags.length &&
+          endSection.sections.every((v, i) => v === tags[i])
+        )
+          break;
+      }
       const startSection = line.match(
         new RegExp(
-          `<!--[ \t]*BEGIN[ \t]*([A-Za-z0-9 ,\t_-]+)[ \t]*SECTION[ \t]*-->[ \t]*\n`,
+          `<!--[ \t]*BEGIN[ \t]*[A-Za-z0-9 ,\t_-]+[ \t]*SECTION[ \t]*-->[ \t]*\n`,
         ),
       );
+      // if it's a section, parse it recursively
       if (startSection !== null) {
         const childSection: SectionBeginNode = parse(startSection[0]);
-        result.push({
+        const t = {
           type: TemplateNodeType.Section,
-          name: childSection.sections.join(" "),
+          name: "placeholder",
+          tags: childSection.sections,
           parent: sectionName,
-          children: this.parseSection(childSection.sections.join(" ")),
-        } as SectionNode);
-        continue;
+          children: this.parseSection("placeholder", childSection.sections),
+        } as SectionNode;
+        for (const sec of childSection.sections) {
+          result.push({
+            ...t,
+            name: sec,
+            children: t.children.map((v) => {
+              if (v.type === TemplateNodeType.Section)
+                return {
+                  ...v,
+                  parent: sec,
+                };
+              return v;
+            }),
+          } as SectionNode);
+          continue;
+        }
+      } else {
+        result.push({
+          type: TemplateNodeType.Text,
+          value: line,
+        } as TextNode);
       }
-      result.push({
-        type: TemplateNodeType.Text,
-        value: line,
-      } as TextNode);
     }
     return result;
   }

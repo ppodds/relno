@@ -10,6 +10,7 @@ describe("Template parser test", () => {
     expect(parser.parse()).toEqual({
       type: TemplateNodeType.Section,
       name: "default",
+      tags: ["default"],
       children: [],
     });
   });
@@ -20,10 +21,27 @@ describe("Template parser test", () => {
     expect(parser.parse()).toEqual({
       type: TemplateNodeType.Section,
       name: "default",
+      tags: ["default"],
       children: [
         {
           type: TemplateNodeType.Text,
           value: "test\n",
+        },
+      ],
+    });
+  });
+  test("with html comment", () => {
+    const parser = new TemplateParser({
+      template: "<!-- test -->",
+    });
+    expect(parser.parse()).toEqual({
+      type: TemplateNodeType.Section,
+      name: "default",
+      tags: ["default"],
+      children: [
+        {
+          type: TemplateNodeType.Text,
+          value: "<!-- test -->\n",
         },
       ],
     });
@@ -35,11 +53,13 @@ describe("Template parser test", () => {
     expect(parser.parse()).toEqual({
       type: TemplateNodeType.Section,
       name: "default",
+      tags: ["default"],
       children: [
         {
           type: TemplateNodeType.Section,
           name: "test",
           parent: "default",
+          tags: ["test"],
           children: [
             {
               type: TemplateNodeType.Text,
@@ -58,6 +78,7 @@ describe("Template parser test", () => {
     expect(parser.parse()).toEqual({
       type: TemplateNodeType.Section,
       name: "default",
+      tags: ["default"],
       children: [
         {
           type: TemplateNodeType.Text,
@@ -67,6 +88,7 @@ describe("Template parser test", () => {
           type: TemplateNodeType.Section,
           name: "test",
           parent: "default",
+          tags: ["test"],
           children: [
             {
               type: TemplateNodeType.Text,
@@ -85,6 +107,7 @@ describe("Template parser test", () => {
     expect(parser.parse()).toEqual({
       type: TemplateNodeType.Section,
       name: "default",
+      tags: ["default"],
       children: [
         {
           type: TemplateNodeType.Text,
@@ -94,6 +117,7 @@ describe("Template parser test", () => {
           type: TemplateNodeType.Section,
           name: "test1",
           parent: "default",
+          tags: ["test1"],
           children: [
             {
               type: TemplateNodeType.Text,
@@ -109,6 +133,7 @@ describe("Template parser test", () => {
           type: TemplateNodeType.Section,
           name: "test2",
           parent: "default",
+          tags: ["test2"],
           children: [
             {
               type: TemplateNodeType.Text,
@@ -131,6 +156,7 @@ describe("Template parser test", () => {
     expect(parser.parse()).toEqual({
       type: TemplateNodeType.Section,
       name: "default",
+      tags: ["default"],
       children: [
         {
           type: TemplateNodeType.Text,
@@ -140,6 +166,7 @@ describe("Template parser test", () => {
           type: TemplateNodeType.Section,
           name: "test1",
           parent: "default",
+          tags: ["test1"],
           children: [
             {
               type: TemplateNodeType.Text,
@@ -149,6 +176,7 @@ describe("Template parser test", () => {
               type: TemplateNodeType.Section,
               name: "test2",
               parent: "test1",
+              tags: ["test2"],
               children: [
                 {
                   type: TemplateNodeType.Text,
@@ -165,6 +193,120 @@ describe("Template parser test", () => {
         {
           type: TemplateNodeType.Text,
           value: "b\n",
+        },
+      ],
+    });
+  });
+  test("reuse pr type section", () => {
+    const parser = new TemplateParser({
+      template:
+        "<!-- BEGIN test1, test2 SECTION -->\ntest\n<!-- END test1, test2 SECTION -->",
+    });
+    expect(parser.parse()).toEqual({
+      type: TemplateNodeType.Section,
+      name: "default",
+      tags: ["default"],
+      children: [
+        {
+          type: TemplateNodeType.Section,
+          name: "test1",
+          parent: "default",
+          tags: ["test1", "test2"],
+          children: [
+            {
+              type: TemplateNodeType.Text,
+              value: "test\n",
+            },
+          ],
+        },
+        {
+          type: TemplateNodeType.Section,
+          name: "test2",
+          parent: "default",
+          tags: ["test1", "test2"],
+          children: [
+            {
+              type: TemplateNodeType.Text,
+              value: "test\n",
+            },
+          ],
+        },
+      ],
+    });
+  });
+  test("reuse pr type section and contain neated section", () => {
+    const parser = new TemplateParser({
+      template:
+        "<!-- BEGIN test1, test2 SECTION -->\n<!-- BEGIN test3, test4 SECTION -->\ntest\n<!-- END test3, test4 SECTION -->\n<!-- END test1, test2 SECTION -->",
+    });
+    expect(parser.parse()).toEqual({
+      type: TemplateNodeType.Section,
+      name: "default",
+      tags: ["default"],
+      children: [
+        {
+          type: TemplateNodeType.Section,
+          name: "test1",
+          parent: "default",
+          tags: ["test1", "test2"],
+          children: [
+            {
+              type: TemplateNodeType.Section,
+              name: "test3",
+              parent: "test1",
+              tags: ["test3", "test4"],
+              children: [
+                {
+                  type: TemplateNodeType.Text,
+                  value: "test\n",
+                },
+              ],
+            },
+            {
+              type: TemplateNodeType.Section,
+              name: "test4",
+              parent: "test1",
+              tags: ["test3", "test4"],
+              children: [
+                {
+                  type: TemplateNodeType.Text,
+                  value: "test\n",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: TemplateNodeType.Section,
+          name: "test2",
+          parent: "default",
+          tags: ["test1", "test2"],
+          children: [
+            {
+              type: TemplateNodeType.Section,
+              name: "test3",
+              parent: "test2",
+              tags: ["test3", "test4"],
+              children: [
+                {
+                  type: TemplateNodeType.Text,
+                  value: "test\n",
+                },
+              ],
+            },
+            {
+              type: TemplateNodeType.Section,
+              name: "test4",
+              parent: "test2",
+              tags: ["test3", "test4"],
+              children: [
+                {
+                  type: TemplateNodeType.Text,
+                  value: "test\n",
+                },
+              ],
+            },
+          ],
         },
       ],
     });

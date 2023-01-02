@@ -1,8 +1,13 @@
 import { describe, test, expect } from "@jest/globals";
-import { Generator, ReleaseMetadata } from "../../src/generator/generator";
+import {
+  Generator,
+  ReleaseMetadata,
+  defineRelnoPlugin,
+  Lifecycle,
+  PRType,
+} from "../../src/generator";
 import { commits } from "../data/commits";
-import { PRType } from "../../src/generator/pr-type";
-import { Commit } from "../../src/git/log";
+import { Commit } from "../../src/git";
 
 const metadata: ReleaseMetadata = {
   authorLogin: "test",
@@ -376,5 +381,41 @@ describe("Generator test", () => {
 
 <!-- Generate by Release Note -->
 `);
+  });
+  describe("lifecycle hook", () => {
+    test("BeforeGenerate", async () => {
+      const t: string[] = [];
+      const plugin = defineRelnoPlugin((generator) => {
+        generator.addHook(Lifecycle.BeforeGenerate, async () => {
+          t.push("test");
+        });
+      });
+      const generator = new Generator([], {
+        prTypes: [],
+        template: "",
+        metadata,
+        plugins: [plugin],
+      });
+      await generator.generate();
+      expect(t[0]).toBe("test");
+    });
+  });
+  describe("lifecycle hook", () => {
+    test("AfterGenerate", async () => {
+      const t: string[] = [];
+      const plugin = defineRelnoPlugin((generator) => {
+        generator.addHook(Lifecycle.AfterGenerate, async () => {
+          t.push("test");
+        });
+      });
+      const generator = new Generator([], {
+        prTypes: [],
+        template: "",
+        metadata,
+        plugins: [plugin],
+      });
+      await generator.generate();
+      expect(t[0]).toBe("test");
+    });
   });
 });

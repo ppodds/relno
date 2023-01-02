@@ -1,5 +1,7 @@
 import { Commit } from "../git/log";
 import { ExpressionEvaluator, Variable } from "./expression-evaluator";
+import { Hook, Hooks } from "./hooks";
+import { Lifecycle } from "./lifecycle";
 import {
   SectionNode,
   TemplateNode,
@@ -7,6 +9,7 @@ import {
   TemplateParser,
   TextNode,
 } from "./parser";
+import { RelnoPlugin } from "./plugin";
 import { PRType } from "./pr-type";
 import { Section } from "./section";
 
@@ -32,6 +35,7 @@ export interface GeneratorOptions {
   prTypes: PRType[];
   template: string;
   metadata: ReleaseMetadata;
+  plugins?: RelnoPlugin[];
 }
 
 export class Generator {
@@ -39,12 +43,14 @@ export class Generator {
   private readonly _options: GeneratorOptions;
   private readonly _data: { prType: PRType; commits: Commit[] }[];
   private readonly _sections: Map<string, Section>;
+  private readonly _hooks: Hooks;
 
   constructor(log: readonly Commit[], options: GeneratorOptions) {
     this._log = log;
     this._options = options;
     this._data = [];
     this._sections = new Map();
+    this._hooks = new Hooks();
     this.addSection({
       name: "default",
       parse: parseDefaultSection,
@@ -59,6 +65,8 @@ export class Generator {
       name: "commits",
       parse: parseCommitsSection,
     });
+    // load plugins
+    for (const plugin of options.plugins ?? []) plugin(this);
   }
 
   /**
@@ -66,6 +74,7 @@ export class Generator {
    * @returns The release notes
    */
   public async generate(): Promise<string> {
+    this._hooks.runHooks(Lifecycle.BeforeGenerate, this);
     // clear data if already generated
     if (this._data.length !== 0) this._data.splice(0, this._data.length);
     // gererate necessary information
@@ -88,7 +97,9 @@ export class Generator {
       template: this._options.template,
     }).parse();
     const parsedTemplateAST = await this.parseTemplateAST(templateAST);
-    return this.flattenAST(parsedTemplateAST);
+    const result = this.flattenAST(parsedTemplateAST);
+    this._hooks.runHooks(Lifecycle.AfterGenerate, this);
+    return result;
   }
 
   private parseTemplateAST(
@@ -109,6 +120,10 @@ export class Generator {
     return result;
   }
 
+  /**
+   * Add a section to the generator.
+   * @param section The section to add
+   */
   public addSection(section: Section) {
     this._sections.set(section.name, section);
   }
@@ -117,14 +132,31 @@ export class Generator {
     return this._data;
   }
 
+  /**
+   * Get a section by name. Throws an error if the section doesn't exist.
+   * @param sectionName The name of the section
+   * @returns The section
+   */
   public getSection(sectionName: string): Section {
     const t = this._sections.get(sectionName);
     if (!t) throw new Error(`Can't find section ${sectionName}`);
     return t;
   }
 
+  /**
+   * Get the options of the generator
+   */
   public get options() {
     return this._options;
+  }
+
+  /**
+   * Add a lifecycle hook to the generator.
+   * @param lifecycle
+   * @param hook
+   */
+  public addHook(lifecycle: Lifecycle, hook: Hook): void {
+    this._hooks.add(lifecycle, hook);
   }
 }
 

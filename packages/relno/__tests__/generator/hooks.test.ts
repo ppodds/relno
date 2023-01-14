@@ -9,7 +9,9 @@ describe("run hooks", () => {
     hooks.add(Lifecycle.BeforeGenerate, async () => {
       t.push("test");
     });
-    await hooks.runHooks(Lifecycle.BeforeGenerate, null as any);
+    await hooks.runHooks(Lifecycle.BeforeGenerate, null as any, {
+      lifecycle: Lifecycle.BeforeGenerate,
+    });
     expect(t[0]).toBe("test");
   });
   test("afterGenerate", async () => {
@@ -18,7 +20,9 @@ describe("run hooks", () => {
     hooks.add(Lifecycle.AfterGenerate, async () => {
       t.push("test");
     });
-    await hooks.runHooks(Lifecycle.AfterGenerate, null as any);
+    await hooks.runHooks(Lifecycle.AfterGenerate, null as any, {
+      lifecycle: Lifecycle.AfterGenerate,
+    });
     expect(t[0]).toBe("test");
   });
 });

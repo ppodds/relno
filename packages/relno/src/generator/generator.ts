@@ -1,6 +1,12 @@
 import { Commit } from "../git/log";
 import { ExpressionEvaluator, Variable } from "./expression-evaluator";
-import { Hook, Hooks } from "./hooks";
+import {
+  AfterGenerateContext,
+  BeforeGenerateContext,
+  GeneratingContext,
+  Hook,
+  Hooks,
+} from "./hooks";
 import { Lifecycle } from "./lifecycle";
 import {
   SectionNode,
@@ -11,7 +17,8 @@ import {
 } from "./parser";
 import { RelnoPlugin } from "./plugin";
 import { PRType } from "./pr-type";
-import { Section } from "./section";
+import { CommitsSection, DefaultSection, PRTypeSection } from "./section";
+import { Section } from "./section/section";
 
 export interface ReleaseMetadata {
   authorLogin: string;
@@ -51,20 +58,11 @@ export class Generator {
     this._data = [];
     this._sections = new Map();
     this._hooks = new Hooks();
-    this.addSection({
-      name: "default",
-      parse: parseDefaultSection,
-    });
+    this.addSection(new DefaultSection());
     for (const prType of options.prTypes) {
-      this.addSection({
-        name: prType.identifier,
-        parse: parsePRTypeSection,
-      });
+      this.addSection(new PRTypeSection(prType.identifier));
     }
-    this.addSection({
-      name: "commits",
-      parse: parseCommitsSection,
-    });
+    this.addSection(new CommitsSection());
     // load plugins
     for (const plugin of options.plugins ?? []) plugin(this);
   }
@@ -74,7 +72,10 @@ export class Generator {
    * @returns The release notes
    */
   public async generate(): Promise<string> {
-    this._hooks.runHooks(Lifecycle.BeforeGenerate, this);
+    this._hooks.runHooks(Lifecycle.BeforeGenerate, this, {
+      lifecycle: Lifecycle.BeforeGenerate,
+      commits: this._log,
+    } as BeforeGenerateContext);
     // clear data if already generated
     if (this._data.length !== 0) this._data.splice(0, this._data.length);
     // gererate necessary information
@@ -98,7 +99,10 @@ export class Generator {
     }).parse();
     const parsedTemplateAST = await this.parseTemplateAST(templateAST);
     const result = this.flattenAST(parsedTemplateAST);
-    this._hooks.runHooks(Lifecycle.AfterGenerate, this);
+    this._hooks.runHooks(Lifecycle.AfterGenerate, this, {
+      lifecycle: Lifecycle.AfterGenerate,
+      commits: this._log,
+    } as AfterGenerateContext);
     return result;
   }
 
@@ -158,136 +162,56 @@ export class Generator {
   public addHook(lifecycle: Lifecycle, hook: Hook): void {
     this._hooks.add(lifecycle, hook);
   }
-}
 
-function parseTextNode(text: TextNode, variable: Variable): TextNode {
-  const regex = /{{([^\n}}]*)}}/;
-  let matchResult = text.value.match(regex);
-  const result: TextNode = {
-    type: TemplateNodeType.Text,
-    value: text.value,
-  };
-  while (matchResult) {
-    const evaluator = new ExpressionEvaluator(variable);
-    const parsedVariable = evaluator.evaluate(matchResult[1].trim());
-    // convert boolean to string
-    if (typeof parsedVariable === "boolean")
-      result.value = result.value.replace(
-        matchResult[0],
-        parsedVariable ? "true" : "false",
-      );
-    else result.value = result.value.replace(regex, parsedVariable);
-    matchResult = result.value.match(regex);
-  }
-  return result;
-}
-
-/**
- * Parse the template node. If the node is a section node, it will call the section parser, otherwise it will call the text node parser.
- * @param generator The generator instance
- * @param node The section node to parse
- * @param variable Variables in this scope
- * @returns The parsed template node
- */
-export async function parseNode(
-  generator: Generator,
-  node: TemplateNode,
-  variable: Variable,
-): Promise<TemplateNode> {
-  switch (node.type) {
-    case TemplateNodeType.Section: {
-      const sectionNode = node as SectionNode;
-      return await generator
-        .getSection(sectionNode.name)
-        .parse(generator, sectionNode);
+  private parseTextNode(text: TextNode, variable: Variable): TextNode {
+    const regex = /{{([^\n}}]*)}}/;
+    let matchResult = text.value.match(regex);
+    const result: TextNode = {
+      type: TemplateNodeType.Text,
+      value: text.value,
+    };
+    while (matchResult) {
+      const evaluator = new ExpressionEvaluator(variable);
+      const parsedVariable = evaluator.evaluate(matchResult[1].trim());
+      // convert boolean to string
+      if (typeof parsedVariable === "boolean")
+        result.value = result.value.replace(
+          matchResult[0],
+          parsedVariable ? "true" : "false",
+        );
+      else result.value = result.value.replace(regex, parsedVariable);
+      matchResult = result.value.match(regex);
     }
-    case TemplateNodeType.Text:
-      return parseTextNode(node as TextNode, variable);
+    return result;
   }
-}
 
-async function parseDefaultSection(
-  generator: Generator,
-  sectionNode: SectionNode,
-): Promise<SectionNode> {
-  const result: SectionNode = {
-    type: TemplateNodeType.Section,
-    name: sectionNode.name,
-    tags: sectionNode.tags,
-    children: [],
-  };
-  for (const child of sectionNode.children) {
-    result.children.push(
-      await parseNode(generator, child, {
-        ...generator.options.metadata,
-      }),
-    );
-  }
-  return result;
-}
-
-async function parsePRTypeSection(
-  generator: Generator,
-  sectionNode: SectionNode,
-): Promise<SectionNode> {
-  const data = generator.data.find(
-    (e) => e.prType.identifier === sectionNode.name,
-  );
-  if (!data) throw new Error(`Can't find section ${sectionNode.name}`);
-  const result: SectionNode = {
-    type: TemplateNodeType.Section,
-    name: sectionNode.name,
-    tags: sectionNode.tags,
-    children: [],
-  };
-  if (data.commits.length === 0) return result;
-  for (const child of sectionNode.children) {
-    result.children.push(
-      await parseNode(generator, child, {
-        title: data.prType.title,
-        identifier: data.prType.identifier,
-      }),
-    );
-  }
-  return result;
-}
-
-async function parseCommitsSection(
-  generator: Generator,
-  sectionNode: SectionNode,
-): Promise<SectionNode> {
-  const data = generator.data.find(
-    (e) => e.prType.identifier === sectionNode.parent,
-  );
-  if (!data) throw new Error(`Can't find section ${sectionNode.parent}`);
-  const result: SectionNode = {
-    type: TemplateNodeType.Section,
-    name: sectionNode.name,
-    tags: sectionNode.tags,
-    children: [],
-  };
-  if (data.commits.length === 0) return result;
-  for (const commit of data.commits) {
-    for (const child of sectionNode.children) {
-      const regex = /([^()\n!]+)(?:\((.*)\))?(!)?: (.+) \(#([1-9][0-9]*)\)/;
-      const matchResult = commit.message.match(regex);
-      if (!matchResult) continue;
-      const prType = matchResult[1];
-      const prSubtype = matchResult[2] ?? "";
-      const prBreaking = matchResult[3] === "!";
-      const message = matchResult[4];
-      const prNumber = matchResult[5];
-      result.children.push(
-        await parseNode(generator, child, {
-          ...commit,
-          prType,
-          prSubtype,
-          prBreaking,
-          message,
-          prNumber,
-        }),
-      );
+  /**
+   * Parse the template node. If the node is a section node, it will call the section parser, otherwise it will call the text node parser.
+   * @param generator The generator instance
+   * @param node The section node to parse
+   * @param variable Variables in this scope
+   * @returns The parsed template node
+   */
+  public async parseNode(
+    generator: Generator,
+    node: TemplateNode,
+    variable: Variable,
+  ): Promise<TemplateNode> {
+    switch (node.type) {
+      case TemplateNodeType.Section: {
+        const sectionNode = node as SectionNode;
+        const result = await generator
+          .getSection(sectionNode.name)
+          .parse(generator, sectionNode);
+        await generator._hooks.runHooks(Lifecycle.Generating, this, {
+          sectionName: sectionNode.name,
+          variable,
+          result,
+        } as GeneratingContext);
+        return result;
+      }
+      case TemplateNodeType.Text:
+        return this.parseTextNode(node as TextNode, variable);
     }
   }
-  return result;
 }

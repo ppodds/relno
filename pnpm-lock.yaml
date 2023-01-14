@@ -33,7 +33,7 @@ importers:
       lint-staged: ^13.1.0
       prettier: 2.8.1
       relno: ^0.0.0-alpha.3
-      rimraf: ^3.0.2
+      rimraf: ^4.0.0
       ts-jest: ^29.0.0
       typescript: ^4.7.4
     dependencies:
@@ -51,7 +51,7 @@ importers:
       jest: 29.3.1_@types+node@18.11.17
       lint-staged: 13.1.0
       prettier: 2.8.1
-      rimraf: 3.0.2
+      rimraf: 4.0.4
       ts-jest: 29.0.3_p6ekqnroyms5nhqbfxosryz7rm
       typescript: 4.9.4
 
@@ -107,7 +107,7 @@ importers:
       lint-staged: ^13.1.0
       peggy: ^2.0.1
       prettier: 2.8.1
-      rimraf: ^3.0.2
+      rimraf: ^4.0.0
       simple-git: ^3.15.0
       ts-jest: ^29.0.0
       ts-node: ^10.8.2
@@ -130,7 +130,7 @@ importers:
       jest: 29.3.1_xgdmd3tdlagpkcvgycprrn3igm
       lint-staged: 13.1.0
       prettier: 2.8.1
-      rimraf: 3.0.2
+      rimraf: 4.0.4
       ts-jest: 29.0.3_p6ekqnroyms5nhqbfxosryz7rm
       ts-node: 10.9.1_moeqx3xmzxqxagf2sz6mqkbb7m
       typescript: 4.9.4
@@ -10386,6 +10386,12 @@ packages:
     hasBin: true
     dependencies:
       glob: 7.2.3
+    dev: true
+
+  /rimraf/4.0.4:
+    resolution: {integrity: sha512-R0hoVr9xTwemarQjoWlNt/nb5dEGVTBhVdkRmEX2zEkT8T6onH0XKiGjuaC7rNNj/gYzY2p4NVRJ3sjO1ascHQ==}
+    engines: {node: '>=14'}
+    hasBin: true
     dev: true
 
   /rollup-plugin-dts/5.1.0_fjmngzu5qr6xzjooxkpjm6imha:

@@ -141,7 +141,7 @@ export class Generator {
    * @param sectionName The name of the section
    * @returns The section
    */
-  public getSection(sectionName: string): Section {
+  private getSection(sectionName: string): Section {
     const t = this._sections.get(sectionName);
     if (!t) throw new Error(`Can't find section ${sectionName}`);
     return t;

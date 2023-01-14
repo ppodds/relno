@@ -1,6 +1,6 @@
 {
   "name": "relno-plugin-contributor",
-  "version": "0.0.0-alpha.3",
+  "version": "0.0.0-alpha.4",
   "description": "Support generate contributor section with Relno.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -53,6 +53,6 @@
     ]
   },
   "dependencies": {
-    "relno": "^0.0.0-alpha.3"
+    "relno": "^0.0.0-alpha.4"
   }
 }

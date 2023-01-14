@@ -26,16 +26,19 @@ export interface Context {
 }
 
 export interface GeneratingContext extends Context {
+  lifecycle: Lifecycle.Generating;
   sectionName: string;
   variable: Variable;
   result: SectionNode;
 }
 
 export interface BeforeGenerateContext extends Context {
+  lifecycle: Lifecycle.BeforeGenerate;
   commits: Commit[];
 }
 
 export interface AfterGenerateContext extends Context {
+  lifecycle: Lifecycle.AfterGenerate;
   commits: Commit[];
 }
 

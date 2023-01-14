@@ -1,5 +1,5 @@
-# Relno
+# Relno Contributors Plugin
 
-Core package for Relno.
+Contributors plugin for Relno.
 
 Learn more about this package: [https://relno.ppodds.cc](https://relno.ppodds.cc)

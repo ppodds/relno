@@ -30,7 +30,7 @@
   "packageManager": "pnpm@7.25.0",
   "dependencies": {
     "commander": "^10.0.0",
-    "relno": "^0.0.0-alpha.4"
+    "relno": "^0.0.0-alpha"
   },
   "devDependencies": {
     "@jest/globals": "^29.3.1",

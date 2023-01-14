@@ -53,6 +53,6 @@
     ]
   },
   "dependencies": {
-    "relno": "^0.0.0-alpha.4"
+    "relno": "^0.0.0-alpha"
   }
 }

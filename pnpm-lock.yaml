@@ -24,7 +24,7 @@ importers:
       '@types/node': ^18.0.0
       '@typescript-eslint/eslint-plugin': ^5.45.0
       '@typescript-eslint/parser': ^5.30.5
-      commander: ^9.4.1
+      commander: ^10.0.0
       eslint: ^8.19.0
       eslint-config-prettier: ^8.5.0
       eslint-plugin-jest: ^27.0.0
@@ -37,7 +37,7 @@ importers:
       ts-jest: ^29.0.0
       typescript: ^4.7.4
     dependencies:
-      commander: 9.4.1
+      commander: 10.0.0
       relno: link:../relno
     devDependencies:
       '@jest/globals': 29.3.1
@@ -4165,6 +4165,11 @@ packages:
   /comma-separated-tokens/2.0.3:
     resolution: {integrity: sha512-Fu4hJdvzeylCfQPp9SGWidpzrMs7tTrlu6Vb8XGaRGck8QSNZJJp538Wrb60Lax4fPwR64ViY468OIUTbRlGZg==}
     dev: true
+
+  /commander/10.0.0:
+    resolution: {integrity: sha512-zS5PnTI22FIRM6ylNW8G4Ap0IEOyk62fhLSD0+uHRT9McRCLGpkVNvao4bjimpK/GShynyQkFFxHhwMcETmduA==}
+    engines: {node: '>=14'}
+    dev: false
 
   /commander/2.20.3:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}

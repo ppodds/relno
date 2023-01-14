@@ -30,6 +30,7 @@ export async function run() {
     template: config.template ?? "",
     prTypes: config.prTypes ?? [],
     metadata: options.metadata as ReleaseMetadata,
+    plugins: config.plugins ?? [],
   });
   const result = await generator.generate();
   console.log(result);

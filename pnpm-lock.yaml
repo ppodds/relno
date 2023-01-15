@@ -31,7 +31,7 @@ importers:
       eslint-plugin-prettier: ^4.2.1
       jest: ^29.0.0
       lint-staged: ^13.1.0
-      prettier: 2.8.1
+      prettier: 2.8.3
       relno: ^0.0.0-alpha.4
       rimraf: ^4.0.0
       ts-jest: ^29.0.0
@@ -47,10 +47,10 @@ importers:
       eslint: 8.30.0
       eslint-config-prettier: 8.5.0_eslint@8.30.0
       eslint-plugin-jest: 27.1.7_ynswt5pvagzyqki5w7w75b3qvm
-      eslint-plugin-prettier: 4.2.1_kl4pe43v5b43npmso5hoplpbyi
+      eslint-plugin-prettier: 4.2.1_bxtqutsr77kdjupoaxnvecwq24
       jest: 29.3.1_@types+node@18.11.17
       lint-staged: 13.1.0
-      prettier: 2.8.1
+      prettier: 2.8.3
       rimraf: 4.0.4
       ts-jest: 29.0.3_p6ekqnroyms5nhqbfxosryz7rm
       typescript: 4.9.4
@@ -67,7 +67,7 @@ importers:
       eslint-plugin-prettier: ^4.2.1
       jest: ^29.0.0
       lint-staged: ^13.1.0
-      prettier: 2.8.1
+      prettier: 2.8.3
       relno: ^0.0.0-alpha.4
       rimraf: ^3.0.2
       ts-jest: ^29.0.0
@@ -83,10 +83,10 @@ importers:
       eslint: 8.30.0
       eslint-config-prettier: 8.5.0_eslint@8.30.0
       eslint-plugin-jest: 27.1.7_ynswt5pvagzyqki5w7w75b3qvm
-      eslint-plugin-prettier: 4.2.1_kl4pe43v5b43npmso5hoplpbyi
+      eslint-plugin-prettier: 4.2.1_bxtqutsr77kdjupoaxnvecwq24
       jest: 29.3.1_zfha7dvnw4nti6zkbsmhmn6xo4
       lint-staged: 13.1.0
-      prettier: 2.8.1
+      prettier: 2.8.3
       rimraf: 3.0.2
       ts-jest: 29.0.3_p6ekqnroyms5nhqbfxosryz7rm
       ts-node: 10.9.1_awa2wsr5thmg3i7jqycphctjfq
@@ -106,7 +106,7 @@ importers:
       jest: ^29.0.0
       lint-staged: ^13.1.0
       peggy: ^2.0.1
-      prettier: 2.8.1
+      prettier: 2.8.3
       rimraf: ^4.0.0
       simple-git: ^3.15.0
       ts-jest: ^29.0.0
@@ -126,10 +126,10 @@ importers:
       eslint: 8.30.0
       eslint-config-prettier: 8.5.0_eslint@8.30.0
       eslint-plugin-jest: 27.1.7_ynswt5pvagzyqki5w7w75b3qvm
-      eslint-plugin-prettier: 4.2.1_kl4pe43v5b43npmso5hoplpbyi
+      eslint-plugin-prettier: 4.2.1_bxtqutsr77kdjupoaxnvecwq24
       jest: 29.3.1_xgdmd3tdlagpkcvgycprrn3igm
       lint-staged: 13.1.0
-      prettier: 2.8.1
+      prettier: 2.8.3
       rimraf: 4.0.4
       ts-jest: 29.0.3_p6ekqnroyms5nhqbfxosryz7rm
       ts-node: 10.9.1_moeqx3xmzxqxagf2sz6mqkbb7m
@@ -5185,7 +5185,7 @@ packages:
       - typescript
     dev: true
 
-  /eslint-plugin-prettier/4.2.1_kl4pe43v5b43npmso5hoplpbyi:
+  /eslint-plugin-prettier/4.2.1_bxtqutsr77kdjupoaxnvecwq24:
     resolution: {integrity: sha512-f/0rXLXUt0oFYs8ra4w49wYZBG5GKZpAYsJSm6rnYL5uVDjd+zowwMwVZHnAjf4edNrKpCDYfXDgmRE/Ak7QyQ==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
@@ -5198,7 +5198,7 @@ packages:
     dependencies:
       eslint: 8.30.0
       eslint-config-prettier: 8.5.0_eslint@8.30.0
-      prettier: 2.8.1
+      prettier: 2.8.3
       prettier-linter-helpers: 1.0.0
     dev: true
 
@@ -9909,8 +9909,8 @@ packages:
       fast-diff: 1.2.0
     dev: true
 
-  /prettier/2.8.1:
-    resolution: {integrity: sha512-lqGoSJBQNJidqCHE80vqZJHWHRFoNYsSpP9AjFhlhi9ODCJA541svILes/+/1GM3VaL/abZi7cpFzOpdR9UPKg==}
+  /prettier/2.8.3:
+    resolution: {integrity: sha512-tJ/oJ4amDihPoufT5sM0Z1SKEuKay8LfVAMlbbhnnkvt6BUserZylqo2PN+p9KeljLr0OHa2rXHU1T8reeoTrw==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     dev: true

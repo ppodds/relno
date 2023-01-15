@@ -11,7 +11,7 @@
   "license": "MIT",
   "module": "CommonJS",
   "scripts": {
-    "clean": "rimraf lib/*",
+    "clean": "rimraf lib",
     "build": "pnpm clean && tsc",
     "format": "prettier --write {src,__tests__}/**/*.ts",
     "format-check": "prettier --check {src,__tests__}/**/*.ts",

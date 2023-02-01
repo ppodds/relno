@@ -10,7 +10,7 @@
   },
   "packageManager": "pnpm@7.25.0",
   "devDependencies": {
-    "husky": "^8.0.2",
-    "lerna": "^6.1.0"
+    "husky": "^8.0.3",
+    "lerna": "^6.4.1"
   }
 }

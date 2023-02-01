@@ -26,7 +26,7 @@
     "release",
     "release note"
   ],
-  "packageManager": "pnpm@7.25.0",
+  "packageManager": "pnpm@7.26.3",
   "dependencies": {
     "date-and-time": "^2.4.1",
     "peggy": "^2.0.1",

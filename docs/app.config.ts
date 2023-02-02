@@ -13,6 +13,9 @@ export default defineAppConfig({
     aside: {
       level: 1,
     },
+    footer: {
+      credits: false,
+    },
     github: {
       edit: true,
       contributors: true,

@@ -27,7 +27,7 @@
     "release",
     "release note"
   ],
-  "packageManager": "pnpm@7.25.0",
+  "packageManager": "pnpm@7.26.3",
   "dependencies": {
     "commander": "^10.0.0",
     "relno": "^0.0.0"

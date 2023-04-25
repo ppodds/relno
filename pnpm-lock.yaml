@@ -130,14 +130,14 @@ importers:
         specifier: ^2.4.1
         version: 2.4.1
       peggy:
-        specifier: ^2.0.1
-        version: 2.0.1
+        specifier: ^3.0.0
+        version: 3.0.0
       simple-git:
         specifier: ^3.15.0
         version: 3.15.1
       ts-pegjs:
         specifier: ^3.0.0
-        version: 3.0.0(peggy@2.0.1)
+        version: 3.0.0(peggy@3.0.0)
     devDependencies:
       '@jest/globals':
         specifier: ^29.3.1
@@ -4615,6 +4615,7 @@ packages:
   /commander@9.4.1:
     resolution: {integrity: sha512-5EEkTNyHNGFPD2H+c/dXXfQZYa/scCKasxWcXJaWnNJ99pnQN9Vnmqow+p+PlFPE63Q6mThaZws1T+HxfpgtPw==}
     engines: {node: ^12.20.0 || >=14}
+    dev: true
 
   /commander@9.5.0:
     resolution: {integrity: sha512-KRs7WVDKg86PWiuAqhDrAQnTXZKraVcCc6vFdL14qrZ/DcWwuRo7VoiYXalXO7S5GKpqYiVEwCbgFDfxNHKJBQ==}
@@ -9599,12 +9600,12 @@ packages:
     resolution: {integrity: sha512-ODbEPR0KKHqECXW1GoxdDb+AZvULmXjVPy4rt+pGo2+TnjJTIPJQSVS6N63n8T2Ip+syHhbn52OewKicV0373w==}
     dev: true
 
-  /peggy@2.0.1:
-    resolution: {integrity: sha512-mBqfmdUAOVn7RILpXTbcRBhLfTR4Go0SresSnivGDdRylBOyVFJncFiVyCNNpPWq8HmgeRleXHs/Go4o8kQVXA==}
-    engines: {node: '>=10'}
+  /peggy@3.0.0:
+    resolution: {integrity: sha512-Z4wzPw+OhPO1X2nVM3rt4Uprn79lIV9AlkOar1JC+veI6q7f+X92k1pI+HBhkxncz5LCwvei+Xl1+oKjdlcxiQ==}
+    engines: {node: '>=14'}
     hasBin: true
     dependencies:
-      commander: 9.4.1
+      commander: 10.0.0
       source-map-generator: 0.8.0
     dev: false
 
@@ -11466,13 +11467,13 @@ packages:
       yn: 3.1.1
     dev: true
 
-  /ts-pegjs@3.0.0(peggy@2.0.1):
+  /ts-pegjs@3.0.0(peggy@3.0.0):
     resolution: {integrity: sha512-0yTchsO04jfYl/85sibupLSb7PfXs890jN9WqXoI6+WrFilam3+44ZdjBwIKPc9n2jdSbcxfdMvXNNwNEHSLCg==}
     hasBin: true
     peerDependencies:
       peggy: ^2.0.1
     dependencies:
-      peggy: 2.0.1
+      peggy: 3.0.0
     dev: false
 
   /tsconfig-paths@4.1.2:

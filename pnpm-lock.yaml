@@ -127,8 +127,8 @@ importers:
   packages/relno:
     dependencies:
       date-and-time:
-        specifier: ^2.4.1
-        version: 2.4.1
+        specifier: ^3.0.0
+        version: 3.0.0
       peggy:
         specifier: ^3.0.0
         version: 3.0.0
@@ -4953,8 +4953,8 @@ packages:
     engines: {node: '>= 12'}
     dev: true
 
-  /date-and-time@2.4.1:
-    resolution: {integrity: sha512-fG+ClATev+wHryqxOoGcTTegr5RhYE+tz/XHUkTQ/zvpWqQ90oOxjOhuMQ02bw87Oy9N3qBENCHHHSKdWJjgTg==}
+  /date-and-time@3.0.0:
+    resolution: {integrity: sha512-uuzXp/mvv6jEMLiP5QzERSQPzHqYnv9i8NZ8BS5kYeB2sakv74EewQiCS4Ahxwq3In+9fYZhGztuDHRVzIOkFQ==}
     dev: false
 
   /dateformat@3.0.3:

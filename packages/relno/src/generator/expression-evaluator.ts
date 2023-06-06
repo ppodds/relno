@@ -3,11 +3,10 @@ import {
   ExpressionNode,
   ExpressionNodeType,
   BooleanNode,
-  MacroNode,
   StringNode,
   VariableNode,
 } from "./parser/expression-ast";
-import { parse } from "./parser/expression-parser";
+import { Expression, Macro, parse } from "./parser/expression-parser";
 
 export interface Variable {
   [key: string]: string | boolean | undefined;
@@ -34,10 +33,10 @@ export class ExpressionEvaluator {
    * @param ast The expression ASTNode need to be evaluate
    * @returns evaluated result
    */
-  public evaluateAST(ast: ExpressionNode): string | boolean {
+  public evaluateAST(ast: Expression): string | boolean {
     switch (ast.type) {
       case ExpressionNodeType.Macro:
-        return this.evaluateMacro(ast as MacroNode);
+        return this.evaluateMacro(ast);
       case ExpressionNodeType.String:
         return (ast as StringNode).value;
       case ExpressionNodeType.Boolean:
@@ -55,6 +54,8 @@ export class ExpressionEvaluator {
           );
         return parsedVariable;
       }
+      default:
+        throw new Error("Unexpected ast type. It should never happen.");
     }
   }
 
@@ -63,7 +64,7 @@ export class ExpressionEvaluator {
    * @param macroName The name of the macro
    * @param macroArgs macro arguments (not parsed)
    */
-  private evaluateMacro(macroAST: MacroNode): string {
+  private evaluateMacro(macroAST: Macro): string {
     const macro = (
       macros as {
         [x: string]: ((...args: (string | boolean)[]) => string) | undefined;

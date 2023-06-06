@@ -5,7 +5,6 @@ import {
   TemplateNodeType,
   TextNode,
 } from "./template-ast";
-import { SectionBeginNode, SectionEndNode } from "./section-ast";
 
 export interface TemplateParserOptions {
   template: string;
@@ -83,7 +82,7 @@ export class TemplateParser {
         )
       ) {
         // parse and check tag
-        const endSection: SectionEndNode = parse(line);
+        const endSection = parse(line);
         // check tag deeply
         if (
           endSection.sections.length === tags.length &&
@@ -98,7 +97,7 @@ export class TemplateParser {
       );
       // if it's a section, parse it recursively
       if (startSection !== null) {
-        const childSection: SectionBeginNode = parse(startSection[0]);
+        const childSection = parse(startSection[0]);
         const t = {
           type: TemplateNodeType.Section,
           name: "placeholder",

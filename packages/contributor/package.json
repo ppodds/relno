@@ -1,6 +1,6 @@
 {
   "name": "relno-plugin-contributor",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Support generate contributor section with Relno.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",

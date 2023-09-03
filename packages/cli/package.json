@@ -33,7 +33,7 @@
     "relno": "workspace:^"
   },
   "devDependencies": {
-    "@jest/globals": "^29.5.0",
+    "@jest/globals": "^29.6.4",
     "@types/node": "^18.17.14",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
@@ -41,7 +41,7 @@
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-jest": "^27.2.3",
     "eslint-plugin-prettier": "^5.0.0",
-    "jest": "^29.5.0",
+    "jest": "^29.6.4",
     "lint-staged": "^14.0.1",
     "prettier": "3.0.3",
     "rimraf": "^5.0.1",

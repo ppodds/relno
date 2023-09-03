@@ -25,7 +25,7 @@
     "release",
     "release note"
   ],
-  "packageManager": "pnpm@8.6.7",
+  "packageManager": "pnpm@8.7.1",
   "devDependencies": {
     "@jest/globals": "^29.5.0",
     "@types/node": "^18.16.16",

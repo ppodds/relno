@@ -11,6 +11,8 @@ module.exports = {
   rules: {
     "no-unused-vars": "off",
     "i18n-text/no-en": "off",
+    "@typescript-eslint/no-unused-vars": "warn",
+    "@typescript-eslint/no-explicit-any": "warn",
   },
   env: {
     node: true,

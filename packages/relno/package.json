@@ -30,7 +30,7 @@
   "dependencies": {
     "date-and-time": "^3.0.0",
     "peggy": "^3.0.2",
-    "simple-git": "^3.19.0",
+    "simple-git": "^3.19.1",
     "ts-pegjs": "^4.2.1"
   },
   "devDependencies": {

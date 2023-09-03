@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -131,8 +131,8 @@ importers:
   packages/relno:
     dependencies:
       date-and-time:
-        specifier: ^3.0.0
-        version: 3.0.0
+        specifier: ^3.0.2
+        version: 3.0.2
       peggy:
         specifier: ^3.0.2
         version: 3.0.2
@@ -4712,8 +4712,8 @@ packages:
     engines: {node: '>= 12'}
     dev: true
 
-  /date-and-time@3.0.0:
-    resolution: {integrity: sha512-uuzXp/mvv6jEMLiP5QzERSQPzHqYnv9i8NZ8BS5kYeB2sakv74EewQiCS4Ahxwq3In+9fYZhGztuDHRVzIOkFQ==}
+  /date-and-time@3.0.2:
+    resolution: {integrity: sha512-MOqlRertOQmQI7ySbz6dKLM7Rxm9dgcPuBI9IL7NVe0UGqHPK+6hWSKVhLrVHxlSgQQtocE2R7+HFOf5aMz8vw==}
     dev: false
 
   /dateformat@3.0.3:

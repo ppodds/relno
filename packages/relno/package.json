@@ -1,6 +1,6 @@
 {
   "name": "relno",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "A fully configurable release note generation framework. Allow you to automatically generate a beautiful release note from commit messages and pull requests.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",

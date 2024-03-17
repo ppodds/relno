@@ -137,8 +137,8 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2
       simple-git:
-        specifier: ^3.21.0
-        version: 3.21.0
+        specifier: ^3.23.0
+        version: 3.23.0
       ts-pegjs:
         specifier: ^4.2.1
         version: 4.2.1(peggy@3.0.2)
@@ -2158,7 +2158,7 @@ packages:
       rc9: 2.1.1
       scule: 1.1.1
       semver: 7.5.4
-      simple-git: 3.21.0
+      simple-git: 3.23.0
       sirv: 2.0.3
       unimport: 3.6.1(rollup@3.29.4)
       vite: 5.0.6
@@ -11975,8 +11975,8 @@ packages:
       - supports-color
     dev: true
 
-  /simple-git@3.21.0:
-    resolution: {integrity: sha512-oTzw9248AF5bDTMk9MrxsRzEzivMlY+DWH0yWS4VYpMhNLhDWnN06pCtaUyPnqv/FpsdeNmRqmZugMABHRPdDA==}
+  /simple-git@3.23.0:
+    resolution: {integrity: sha512-P9ggTW8vb/21CAL/AmnACAhqBDfnqSSZVpV7WuFtsFR9HLunf5IqQvk+OXAQTfkcZep8pKnt3DV3o7w3TegEkQ==}
     dependencies:
       '@kwsites/file-exists': 1.1.1
       '@kwsites/promise-deferred': 1.1.1

@@ -29,7 +29,7 @@
   ],
   "packageManager": "pnpm@8.11.0",
   "dependencies": {
-    "commander": "^11.1.0",
+    "commander": "^12.1.0",
     "relno": "workspace:^"
   },
   "devDependencies": {

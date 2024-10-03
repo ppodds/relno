@@ -29,7 +29,7 @@
   "packageManager": "pnpm@8.11.0",
   "dependencies": {
     "date-and-time": "^3.0.3",
-    "peggy": "^3.0.2",
+    "peggy": "^4.1.1",
     "simple-git": "^3.21.0",
     "ts-pegjs": "^4.2.1"
   },

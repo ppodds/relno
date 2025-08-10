@@ -27,7 +27,7 @@
     "release",
     "release note"
   ],
-  "packageManager": "pnpm@8.11.0",
+  "packageManager": "pnpm@8.15.9",
   "dependencies": {
     "commander": "^11.1.0",
     "relno": "workspace:^"
